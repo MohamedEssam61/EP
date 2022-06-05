@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_expense_expense,expense_expense,model_expense_expense,base.group_user,1,1,1,1
+access_receive_receive,receive_receive,model_receive_receive,base.group_user,1,1,1,1
+access_expense_line,expense_line,model_expense_line,base.group_user,1,1,1,1
+access_receive_line,receive_line,model_receive_line,base.group_user,1,1,1,1
