@@ -12,11 +12,14 @@ class StockCardReportWizard(models.TransientModel):
     date_range_id = fields.Many2one(comodel_name="date.range", string="Period")
     date_from = fields.Date(string="Start Date")
     date_to = fields.Date(string="End Date")
-    location_id = fields.Many2one(
-        comodel_name="stock.location", string="Location", required=True
-    )
+    # location_id = fields.Many2one(
+    #     comodel_name="stock.location", string="Location"
+    # )
+    location_ids = fields.Many2many(
+            comodel_name="stock.location", string="Select Multi Location"
+        )
     product_ids = fields.Many2many(
-        comodel_name="product.product", string="Products", required=True
+        comodel_name="product.product", string="Products"
     )
 
     @api.onchange("date_range_id")
@@ -27,7 +30,7 @@ class StockCardReportWizard(models.TransientModel):
     def button_export_html(self):
         self.ensure_one()
         action = self.env.ref("stock_card_report.action_report_stock_card_report_html")
-        vals = action.read()[0]
+        vals = action.sudo().read()[0]
         context = vals.get("context", {})
         if context:
             context = safe_eval(context)
@@ -50,11 +53,20 @@ class StockCardReportWizard(models.TransientModel):
 
     def _prepare_stock_card_report(self):
         self.ensure_one()
+        if self.location_ids:
+            location_ids = self.location_ids
+        else:
+            location_ids = self.env["stock.location"].search([])
+        if self.product_ids:
+            product_ids = self.product_ids
+        else:
+            product_ids = self.env["product.product"].search([])
         return {
             "date_from": self.date_from,
             "date_to": self.date_to or fields.Date.context_today(self),
-            "product_ids": [(6, 0, self.product_ids.ids)],
-            "location_id": self.location_id.id,
+            "product_ids": [(6, 0, product_ids.ids)],
+            # "location_id": self.location_id.id,
+            "location_ids": [(6, 0, location_ids.ids)],
         }
 
     def _export(self, report_type):
