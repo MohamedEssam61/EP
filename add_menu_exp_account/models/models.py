@@ -74,6 +74,7 @@ class Expense(models.Model):
                         taxx = tax.account_id.id
                 lines.append([0, 0, {
                     'account_id': line.account_id.id,
+                    'analytic_account_id': line.analytic_account_id.id,
                     'name': line.name,
                     'debit': line.price_subtotal,
                 }])
@@ -222,6 +223,7 @@ class receive(models.Model):
                         taxx = tax.account_id.id
                 lines.append([0, 0, {
                     'account_id': line.account_id.id,
+                    'analytic_account_id': line.analytic_account_id.id,
                     'name': line.name,
                     'credit': line.price_subtotal,
                 }])
